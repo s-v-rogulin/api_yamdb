@@ -24,7 +24,7 @@ class Genre(Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name
+        return self.name[:40]
 
 
 class Category(Model):
@@ -42,7 +42,7 @@ class Category(Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name
+        return self.name[:40]
 
 
 class Title(Model):
@@ -108,7 +108,7 @@ class Review(Model):
         ordering = ('pub_date',)
 
     def __str__(self):
-        return self.text
+        return self.text[:40]
 
 
 class Comment(Model):
@@ -133,4 +133,4 @@ class Comment(Model):
         ordering = ('pub_date',)
 
     def __str__(self):
-        return self.text
+        return self.text[:40]
