@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     CASCADE, SET_NULL, CharField, DateTimeField,
@@ -7,7 +6,7 @@ from django.db.models import (
     UniqueConstraint
 )
 
-User = get_user_model()
+from users.models import User
 
 
 class Genre(Model):
