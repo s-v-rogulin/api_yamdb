@@ -11,6 +11,7 @@ from users.models import User
 
 class Genre(Model):
     name = CharField(
+        'Название жанра',
         max_length=256,
     )
     slug = SlugField(
@@ -29,6 +30,7 @@ class Genre(Model):
 
 class Category(Model):
     name = CharField(
+        'Название категории',
         max_length=256,
     )
     slug = SlugField(
@@ -47,16 +49,19 @@ class Category(Model):
 
 class Title(Model):
     name = CharField(
+        'Название произведения',
         max_length=256,
     )
     description = TextField(
+        'Описание произведения',
         null=True,
         blank=True,
     )
-    year = PositiveIntegerField()
+    year = PositiveIntegerField('Год выхода')
     genre = ManyToManyField(
         Genre,
         related_name='titles',
+        verbose_name='Жанр произведения',
     )
     category = ForeignKey(
         Category,
@@ -64,6 +69,7 @@ class Title(Model):
         on_delete=SET_NULL,
         null=True,
         blank=True,
+        verbose_name='Категория произведения',
     )
 
     class Meta:
@@ -80,20 +86,24 @@ class Review(Model):
         Title,
         related_name='reviews',
         on_delete=CASCADE,
+        verbose_name='Название произведения',
     )
-    text = TextField()
+    text = TextField('Текст отзыва',)
     author = ForeignKey(
         User,
         related_name='reviews',
         on_delete=CASCADE,
+        verbose_name='Автор отзыва',
     )
     score = PositiveIntegerField(
+        'Рейтинг',
         validators=(
             MinValueValidator(1, 'Минимальная оценка - 1'),
             MaxValueValidator(10, 'Максимальная оценка - 10')
         ),
     )
     pub_date = DateTimeField(
+        'Дата публикации отзыва',
         default=timezone.now,
     )
 
@@ -105,7 +115,7 @@ class Review(Model):
                 fields=('title', 'author', ),
                 name='unique_title_author'
             )]
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text[:40]
@@ -115,15 +125,18 @@ class Comment(Model):
     review = ForeignKey(
         Review,
         related_name='comments',
-        on_delete=CASCADE
+        on_delete=CASCADE,
+        verbose_name='Отзыв на произведение',
     )
-    text = TextField()
+    text = TextField('Текс комментария',)
     author = ForeignKey(
         User,
         related_name='comments',
-        on_delete=CASCADE
+        on_delete=CASCADE,
+        verbose_name='Автор комментария',
     )
     pub_date = DateTimeField(
+        'Дата публикации комментария',
         default=timezone.now,
     )
 

@@ -37,12 +37,13 @@ class TitleAdmin(admin.ModelAdmin):
         'description',
     )
     search_fields = ('name', 'year',)
-    list_filter = ('name', 'year', 'category__name', 'genre__name')
+    list_filter = ('year', 'category__name', 'genre__name')
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'title',
         'text',
         'author',
@@ -54,6 +55,7 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'review',
         'text',
         'author',
