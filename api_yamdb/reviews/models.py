@@ -1,10 +1,10 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     CASCADE, SET_NULL, CharField, DateTimeField,
-    ForeignKey, ManyToManyField, Model,
-    PositiveIntegerField, SlugField, TextField,
-    UniqueConstraint
+    ForeignKey, ManyToManyField, Model, PositiveIntegerField,
+    SlugField, TextField, UniqueConstraint,
 )
+from django.utils import timezone
 
 from users.models import User
 
@@ -72,7 +72,7 @@ class Title(Model):
         ordering = ('year',)
 
     def __str__(self):
-        return self.name
+        return self.name[:40]
 
 
 class Review(Model):
@@ -94,7 +94,7 @@ class Review(Model):
         ),
     )
     pub_date = DateTimeField(
-        auto_now_add=True,
+        default=timezone.now,
     )
 
     class Meta:
@@ -124,7 +124,7 @@ class Comment(Model):
         on_delete=CASCADE
     )
     pub_date = DateTimeField(
-        auto_now_add=True,
+        default=timezone.now,
     )
 
     class Meta:

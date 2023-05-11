@@ -1,10 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import (
-    CharField,
-    EmailField,
-    TextChoices,
-    TextField,
-)
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db.models import CharField, EmailField, TextChoices, TextField
 
 
 class User(AbstractUser):
@@ -15,6 +11,7 @@ class User(AbstractUser):
     username = CharField(
         max_length=150,
         unique=True,
+        validators=(UnicodeUsernameValidator(),)
     )
     email = EmailField(
         max_length=254,
