@@ -128,7 +128,7 @@ class Comment(Model):
         on_delete=CASCADE,
         verbose_name='Отзыв на произведение',
     )
-    text = TextField('Текс комментария',)
+    text = TextField('Текст комментария',)
     author = ForeignKey(
         User,
         related_name='comments',
