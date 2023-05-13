@@ -20,5 +20,9 @@ v1_router.register(
 )
 
 urlpatterns = [
-    path('v1/', include(v1_router.urls)),
+    path('v1/auth/', include([
+        path('signup/', ConfCodeView.as_view()),
+        path('token/', TokenView.as_view())
+    ])),
+    path('v1/', include(router_v1.urls)),
 ]
