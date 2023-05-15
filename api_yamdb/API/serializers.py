@@ -64,7 +64,6 @@ class Commentserializer(serializers.ModelSerializer):
         read_only = ('id',)
 
 
-
 class SignUpSerializer(serializers.Serializer, UsernameSerializer):
     username = serializers.CharField(
         max_length=settings.LIMIT_USERNAME,
@@ -101,7 +100,7 @@ class UserSerializer(serializers.ModelSerializer, UsernameSerializer):
                   'last_name',
                   'bio',
                   'role')
-        
+  
 
 class NotAdminUserSerializer(UserSerializer, UsernameSerializer):
     class Meta(UserSerializer.Meta):
