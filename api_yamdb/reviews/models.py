@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     CASCADE, SET_NULL, CharField, DateTimeField,
@@ -57,7 +59,12 @@ class Title(Model):
         null=True,
         blank=True,
     )
-    year = PositiveIntegerField('Год выхода')
+    year = PositiveIntegerField(
+        'Год выхода',
+        validators=(
+            MaxValueValidator(date.today().year),
+        ),
+    )
     genre = ManyToManyField(
         Genre,
         related_name='titles',
