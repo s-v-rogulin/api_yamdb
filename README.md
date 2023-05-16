@@ -27,7 +27,7 @@
 ```
 git clone https://github.com/s-v-rogulin/api_yamdb.git
 
-cd yatube_api
+cd api_yamdb
 ```
 
 Cоздать и активировать виртуальное окружение:
