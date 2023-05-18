@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, permissions, status
@@ -148,7 +149,10 @@ class GenreViewSet(CategoryGenreViewSet):
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.order_by('pk')
+    queryset = (
+        Title.objects.order_by('pk')
+        .annotate(rating=Avg('reviews__score'))
+    )
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
