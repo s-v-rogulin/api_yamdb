@@ -27,9 +27,9 @@ class User(AbstractUser):
         null=True,
     )
 
-    def __getattr__(self, attr):
-        if attr == 'is_admin':
-            return self.is_superuser or self.role == self.Roles.ADMIN
-        if attr == 'is_moderator':
-            return self.role == self.Roles.MODERATOR
-        raise AttributeError
+    is_admin = property(
+        lambda self: self.is_superuser or self.role == self.Roles.ADMIN
+    )
+    is_moderator = property(
+        lambda self: self.role == self.Roles.MODERATOR
+    )

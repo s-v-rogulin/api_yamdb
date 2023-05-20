@@ -1,6 +1,5 @@
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import IntegrityError
-from django.db.models import Avg
 from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
@@ -64,6 +63,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             )
         return data
 
+    def validate_score(self, value):
+        if 1 <= value <= 10:
+            return value
+        raise serializers.ValidationError('Оценка должна быть от1 до 10.')
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
@@ -92,14 +96,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class ListDetailedTitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
-    rating = serializers.SerializerMethodField()
-
-    def get_rating(self, obj):
-        rating = (
-            Review.objects.filter(title=obj)
-            .aggregate(Avg('score'))['score__avg']
-        )
-        return None if not rating else int(rating)
+    rating = serializers.IntegerField()
 
     class Meta:
         model = Title
