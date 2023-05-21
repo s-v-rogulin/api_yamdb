@@ -54,21 +54,20 @@ class TokenView(TokenObtainPairView):
     def post(self, request):
         serializer = TokenSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = get_object_or_404(
-                User, username=request.data.get('username')
+        serializer.is_valid(raise_exception=True)
+        user = get_object_or_404(
+            User, username=request.data.get('username')
+        )
+        if not default_token_generator.check_token(
+            user, request.data.get('confirmation_code')
+        ):
+            return Response(
+                'Неверный confirmation_code',
+                status=status.HTTP_400_BAD_REQUEST
             )
-            if not default_token_generator.check_token(
-                user, request.data.get('confirmation_code')
-            ):
-                return Response(
-                    'Неверный confirmation_code',
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            token = {'token': str(AccessToken.for_user(user))}
+        token = {'token': str(AccessToken.for_user(user))}
 
-            return Response(token, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(token, status=status.HTTP_200_OK)
 
 
 class UsersViewSet(ModelViewSet):
@@ -88,12 +87,11 @@ class UsersViewSet(ModelViewSet):
         serializer = self.get_serializer(
             request.user, data=request.data, partial=True
         )
-        if serializer.is_valid():
-            if self.request.method == 'PATCH':
-                serializer.validated_data.pop('role', None)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        if self.request.method == 'PATCH':
+            serializer.validated_data.pop('role', None)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         if request.method == 'PUT':
