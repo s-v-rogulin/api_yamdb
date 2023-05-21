@@ -34,15 +34,15 @@ class SignUpView(APIView):
         serializer = AuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = User.objects.get(
-            username=request.data.get('username'),
-            email=request.data.get('email')
+            username=serializer.validated_data.get('username'),
+            email=serializer.validated_data.get('email')
         )
         confirmation_code = default_token_generator.make_token(user)
         send_mail(
             'Код подтверждения',
             f'Ваш код - {confirmation_code}',
             settings.SENDER_EMAIL,
-            [request.data.get('email')]
+            [serializer.validated_data.get('email')]
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -55,10 +55,10 @@ class TokenView(TokenObtainPairView):
 
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(
-            User, username=request.data.get('username')
+            User, username=serializer.validated_data['username']
         )
         if not default_token_generator.check_token(
-            user, request.data.get('confirmation_code')
+            user, serializer.validated_data['confirmation_code']
         ):
             return Response(
                 'Неверный confirmation_code',
