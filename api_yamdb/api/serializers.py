@@ -1,5 +1,4 @@
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.db import IntegrityError
 from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
@@ -15,12 +14,15 @@ class AuthSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, max_length=254)
 
     def validate(self, data):
-        try:
-            User.objects.get_or_create(**data)
-        except IntegrityError:
+        mail_exists = User.objects.filter(email=data['email']).exists()
+        name_exists = User.objects.filter(username=data['username']).exists()
+        if mail_exists ^ name_exists:
             raise serializers.ValidationError(
-                'username или email уже занято'
+                'Такой пользователь уже зарегистрирован с другим адресом почты'
+                if name_exists else
+                'Такой адрес почты уже используется другим пользователем'
             )
+        User.objects.get_or_create(**data)
         return data
 
 
